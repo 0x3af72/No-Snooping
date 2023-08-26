@@ -15,60 +15,60 @@ void WinTakePicture(std::string file) {
     MultiByteToWideChar(CP_UTF8, 0, file.c_str(), -1, (LPWSTR) flOle, len);
     
     // Some declarations
-	ICaptureGraphBuilder2* pBuild;
-	IGraphBuilder* pGraph;
-	IBaseFilter* pCap;
-	IBaseFilter* pMux;
-	IMoniker* pMoniker;
-	IEnumMoniker* pEnum;
-	ICreateDevEnum* pDevEnum;
-	IMediaControl* pControl;
+    ICaptureGraphBuilder2* pBuild;
+    IGraphBuilder* pGraph;
+    IBaseFilter* pCap;
+    IBaseFilter* pMux;
+    IMoniker* pMoniker;
+    IEnumMoniker* pEnum;
+    ICreateDevEnum* pDevEnum;
+    IMediaControl* pControl;
     
     // Initialize
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	CoCreateInstance(CLSID_CaptureGraphBuilder2, NULL, CLSCTX_INPROC_SERVER, IID_ICaptureGraphBuilder2, (void**)&pBuild);
-	CoCreateInstance(CLSID_FilterGraph, 0, CLSCTX_INPROC_SERVER, IID_IFilterGraph, (void**)&pGraph);
-	pBuild->SetFiltergraph(pGraph);
-	CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pDevEnum));
-	pDevEnum->CreateClassEnumerator(CLSID_VideoInputDeviceCategory, &pEnum, 0);
-	
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    CoCreateInstance(CLSID_CaptureGraphBuilder2, NULL, CLSCTX_INPROC_SERVER, IID_ICaptureGraphBuilder2, (void**)&pBuild);
+    CoCreateInstance(CLSID_FilterGraph, 0, CLSCTX_INPROC_SERVER, IID_IFilterGraph, (void**)&pGraph);
+    pBuild->SetFiltergraph(pGraph);
+    CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pDevEnum));
+    pDevEnum->CreateClassEnumerator(CLSID_VideoInputDeviceCategory, &pEnum, 0);
+    
     // Get webcam device
-	while (pEnum->Next(1, &pMoniker, NULL) == S_OK) {
+    while (pEnum->Next(1, &pMoniker, NULL) == S_OK) {
 
-		IPropertyBag* pPropBag;
-		pMoniker->BindToStorage(0, 0, IID_PPV_ARGS(&pPropBag));
-		VARIANT var;
-		VariantInit(&var);
+        IPropertyBag* pPropBag;
+        pMoniker->BindToStorage(0, 0, IID_PPV_ARGS(&pPropBag));
+        VARIANT var;
+        VariantInit(&var);
 
-		pPropBag->Read(L"FriendlyName", &var, 0);
+        pPropBag->Read(L"FriendlyName", &var, 0);
         VariantClear(&var);
-		
-		pPropBag->Release();
-		pMoniker->Release();
-	}
-	pEnum->Reset();
+        
+        pPropBag->Release();
+        pMoniker->Release();
+    }
+    pEnum->Reset();
     pEnum->Next(1, &pMoniker, NULL);
 
     // Bind filters
-	pMoniker->BindToObject(0, 0, IID_IBaseFilter, (void**) &pCap);
-	pGraph->AddFilter(pCap, L"Capture Filter");
-	pGraph->QueryInterface(IID_IMediaControl, (void**) &pControl);
-	pBuild->SetOutputFileName(&MEDIASUBTYPE_Avi, flOle, &pMux, NULL);
-	pBuild->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Video, pCap, NULL, pMux);
-	pControl->Run();
-	Sleep(1000);
+    pMoniker->BindToObject(0, 0, IID_IBaseFilter, (void**) &pCap);
+    pGraph->AddFilter(pCap, L"Capture Filter");
+    pGraph->QueryInterface(IID_IMediaControl, (void**) &pControl);
+    pBuild->SetOutputFileName(&MEDIASUBTYPE_Avi, flOle, &pMux, NULL);
+    pBuild->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Video, pCap, NULL, pMux);
+    pControl->Run();
+    Sleep(1000);
 
     // Clean up
-	pControl->Stop();
-	pBuild->Release();
-	pGraph->Release();
-	pCap->Release();
-	pMux->Release();
-	pMoniker->Release();
-	pEnum->Release();
-	pDevEnum->Release();
-	pControl->Release();
-	CoUninitialize();
+    pControl->Stop();
+    pBuild->Release();
+    pGraph->Release();
+    pCap->Release();
+    pMux->Release();
+    pMoniker->Release();
+    pEnum->Release();
+    pDevEnum->Release();
+    pControl->Release();
+    CoUninitialize();
 }
 
 void TakePicture() {
