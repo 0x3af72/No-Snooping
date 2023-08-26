@@ -1,6 +1,6 @@
 # No Snooping
 
-App to take pictures of "snoopers" that try to unlock your computer.
+Windows program to take pictures of "snoopers" that try to unlock your computer.
 
 Requires a webcam.
 
