@@ -6,9 +6,8 @@
 
 #pragma once
 
-std::unordered_map<std::string, SDL_Texture*> texCache;
-
 // Function to load a texture and cache it
+std::unordered_map<std::string, SDL_Texture*> texCache;
 SDL_Texture* Load_Texture(SDL_Renderer* renderer, std::string file){
 
     // Check if texture already loaded
