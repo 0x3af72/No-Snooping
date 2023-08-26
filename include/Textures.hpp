@@ -6,26 +6,25 @@
 
 #pragma once
 
-std::unordered_map<std::string, SDL_Texture*> _cached_textures;
+std::unordered_map<std::string, SDL_Texture*> texCache;
 
 // Function to load a texture and cache it
-SDL_Texture* load_texture(SDL_Renderer* renderer, std::string path){
+SDL_Texture* Load_Texture(SDL_Renderer* renderer, std::string file){
 
-    if (_cached_textures.count(path) != 0){
-        return _cached_textures[path];
+    // Check if texture already loaded
+    if (texCache.find(file) != texCache.end()){
+        return texCache[file];
     }
 
-    SDL_Surface* temp_surface = IMG_Load(path.c_str());
-
-    if (!temp_surface){
+    // Load texture
+    SDL_Surface* surf = IMG_Load(file.c_str());
+    if (!surf){
         std::cout << "Unable to load image: " << SDL_GetError() << "\n";
     }
-
-    SDL_Texture* loaded_texture = SDL_CreateTextureFromSurface(renderer, temp_surface);
-    SDL_FreeSurface(temp_surface);
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_FreeSurface(surf);
 
     // Cache texture
-    _cached_textures[path] = loaded_texture;
-
-    return loaded_texture;
+    texCache[file] = tex;
+    return tex;
 }
