@@ -6,6 +6,7 @@ UI COMPONENTS
 */
 
 #include <iostream>
+#include <windows.h>
 
 #include "include/Textures.hpp"
 #include "include/Font_Renderer.hpp"
@@ -16,6 +17,7 @@ UI COMPONENTS
 int main(int argc, char* argv[]) {
 
     // Init SDL
+    FreeConsole();
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
     SDL_Window* window = SDL_CreateWindow("No Snooping", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
