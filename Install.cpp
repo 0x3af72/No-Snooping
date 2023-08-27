@@ -7,7 +7,8 @@
 std::vector<std::string> FILES_TO_WRITE = {
     "Monitor.exe", "Monitor.exe.manifest",
     "No Snooping.exe", "No Snooping.exe.manifest",
-    "libfreetype-6.dll", "libpng16-16.dll", "libtiff-5.dll", "SDL2_ttf.dll", "zlib1.dll",
+    "libfreetype-6.dll", "libpng16-16.dll", "libtiff-5.dll", "zlib1.dll",
+    "SDL2.dll", "SDL2_image.dll", "SDL2_ttf.dll",
     "lib/libjpeg-9.dll", "lib/libSDL2_image.a", "lib/libSDL2_image.la", "lib/libSDL2_test.a",
     "lib/libSDL2_test.la", "lib/libSDL2_ttf.a", "lib/libSDL2_ttf.dll.a", "lib/libSDL2_ttf.la",
     "lib/libSDL2.a", "lib/libSDL2.dll.a", "lib/libSDL2.la", "lib/libSDL2main.a", "lib/libSDL2main.la",

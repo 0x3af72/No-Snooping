@@ -53,3 +53,20 @@ void RenderText(SDL_Renderer* renderer, SDL_Color color, int x, int y, std::stri
     // Finally render text
     RenderTextFromCache(renderer, color, x, y, text, font, size);
 }
+
+// Get dimensions of text to be rendered
+std::pair<int, int> GetTextDimensions(SDL_Renderer* renderer, std::string text, std::string font, int size) {
+
+    // Check if font has already been loaded, load font with size
+    if (charCache.find(font) == charCache.end() || charCache[font].find(size) == charCache[font].end()) {
+        LoadFontWithSize(renderer, font, size);
+    }
+
+    // Calculations
+    int textW = 0, textH;
+    for (char c: text) {
+        textW += charCache[font][size][c].w;
+        textH = charCache[font][size][c].h;
+    }
+    return {textW, textH};
+}
