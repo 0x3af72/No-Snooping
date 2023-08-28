@@ -18,7 +18,8 @@ UI COMPONENTS
 int main(int argc, char* argv[]) {
 
     // Init SDL
-    // FreeConsole();
+    // HWND hWnd = GetConsoleWindow();
+    // ShowWindow(hWnd, SW_HIDE);
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
     SDL_Window* window = SDL_CreateWindow("No Snooping", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
