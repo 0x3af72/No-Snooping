@@ -60,6 +60,7 @@ int main() {
     rXml.close();
     std::string sXml = buf.str();
     ReplaceAll(sXml, "<DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>", "<DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>");
+    ReplaceAll(sXml, "<StopIfGoingOnBatteries>true</StopIfGoingOnBatteries>", "<StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>");
     std::ofstream wXml("C:/Program Files/No Snooping/Monitor.xml");
     wXml << sXml;
     wXml.close();
