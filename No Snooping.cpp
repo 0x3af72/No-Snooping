@@ -7,6 +7,7 @@ UI COMPONENTS
 
 #include <iostream>
 #include <windows.h>
+#include <vector>
 
 #include "include/Button.hpp"
 #include "include/Textures.hpp"
@@ -31,7 +32,9 @@ int main(int argc, char* argv[]) {
     Uint32 frStart = 0;
     int frTime = 0;
 
-    SDL_BUTTON test_btn = Button_From_Color(100, 100, 200, 150, [](){std::cout << "clicked\n";}, {255, 0, 0}, {0, 0, 0}, "hello", "fonts/verdana.ttf", 10);
+    // Snooper display
+    std::vector<std::string> spFiles;
+    SDL_Rect spPlaceRect = {200, 0, 600, 600};
 
     // Mainloop
     bool run = true;
@@ -61,9 +64,16 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        // Hmm
-        RenderText(renderer, {255, 255, 255}, 0, 0, "helloworld", "fonts/verdana.ttf", 200);
-        Update_And_Render_Button(test_btn, renderer, mRect, LMU);
+        // Render UI
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(renderer, &spPlaceRect);
+        RenderTextCentered(renderer, {0, 0, 0}, spPlaceRect, "No file currently open.", "fonts/verdana.ttf", 30);
+        /*
+        scrollbar with multiple buttons how
+        Display list of failed logins, thumbnail
+        When open, display big, and info
+        When nothing is open (before anything is open), show some text saying u need to open
+        */
 
         // Present renderer
         SDL_RenderPresent(renderer);

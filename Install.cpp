@@ -3,9 +3,19 @@
 #include <windows.h>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
+
+void ReplaceAll(std::string& src, std::string target, std::string rep) {
+    size_t pos = 0;
+    while ((pos = src.find(target, pos)) != std::string::npos) {
+        src.replace(pos, target.length(), rep);
+        pos += rep.length();
+    }
+}
 
 std::vector<std::string> FILES_TO_WRITE = {
-    "Monitor.exe", "Monitor.exe.manifest",
+    "Monitor.exe", "Monitor.exe.manifest", "Monitor.bat",
     "No Snooping.exe", "No Snooping.exe.manifest",
     "libfreetype-6.dll", "libpng16-16.dll", "libtiff-5.dll", "zlib1.dll",
     "SDL2.dll", "SDL2_image.dll", "SDL2_ttf.dll",
@@ -34,17 +44,32 @@ int main() {
         std::filesystem::copy_file(file, "C:/Program Files/No Snooping/" + file);
     }
 
-    // Start Monitor.exe
-    std::cout << "Starting Monitor.exe\n";
-    ShellExecute(NULL, "open", "C:/Program Files/No Snooping/Monitor.exe", NULL, "C:/Program Files/No Snooping", SW_HIDE);
-
-    // Schedule to run on logon
-    system("schtasks /create /tn \"Monitor\" /tr \"\\\"C:\\Program Files\\No Snooping\\Monitor.exe\\\"\" /sc onlogon /rl highest /f");
+    /*
+    Schedule Monitor.exe to run onlogon
+    1. Create task
+    2. Save task data to xml file
+    3. Change AC start value in XML file to false
+    4. Rewrite task, using the edited XML file
+    */
+    std::cout << "Scheduling to run on logon\n";
+    system("schtasks /create /tn \"Monitor\" /tr \"\\\"C:\\Program Files\\No Snooping\\Monitor.bat\\\"\" /sc onlogon /rl highest /f");
+    system("schtasks /query /tn \"Monitor\" /xml > \"C:\\Program Files\\No Snooping\\Monitor.xml\"");
+    std::ifstream rXml("C:/Program Files/No Snooping/Monitor.xml");
+    std::stringstream buf;
+    buf << rXml.rdbuf();
+    rXml.close();
+    std::string sXml = buf.str();
+    ReplaceAll(sXml, "<DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>", "<DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>");
+    std::ofstream wXml("C:/Program Files/No Snooping/Monitor.xml");
+    wXml << sXml;
+    wXml.close();
+    system("schtasks /create /tn \"Monitor\" /xml \"C:\\Program Files\\No Snooping\\Monitor.xml\" /f");
+    ShellExecute(NULL, "open", "C:/Program Files/No Snooping/Monitor.exe", NULL, "C:/Program Files/No Snooping", SW_SHOW);
 
     // Start No Snooping.exe
     std::cout << "Done! You can delete this folder after this -> Press ENTER to launch the app...";
     std::getline(std::cin, tmp);
-    ShellExecute(NULL, "open", "C:/Program Files/No Snooping/No Snooping.exe", NULL, "C:/Program Files/No Snooping", SW_SHOWDEFAULT);
+    ShellExecute(NULL, "open", "C:/Program Files/No Snooping/No Snooping.exe", NULL, "C:/Program Files/No Snooping", SW_SHOW);
 
     return 0;
 }

@@ -70,3 +70,11 @@ std::pair<int, int> GetTextDimensions(SDL_Renderer* renderer, std::string text, 
     }
     return {textW, textH};
 }
+
+// Rendered text centered in another rect
+void RenderTextCentered(SDL_Renderer* renderer, SDL_Color color, SDL_Rect centerIn, std::string text, std::string font, int size) {
+    auto [textW, textH] = GetTextDimensions(renderer, text, font, size);
+    int disX = centerIn.x + (centerIn.w - textW) / 2;
+    int disY = centerIn.y + (centerIn.h - textH) / 2;
+    RenderText(renderer, color, disX, disY, text, font, size);
+}
