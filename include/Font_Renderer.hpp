@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Center.hpp"
 #include <SDL2/include/SDL2/SDL.h>
 #include <SDL2/include/SDL2/SDL_ttf.h>
 #include <SDL2/include/SDL2/SDL_image.h>
@@ -74,7 +75,6 @@ std::pair<int, int> GetTextDimensions(SDL_Renderer* renderer, std::string text, 
 // Rendered text centered in another rect
 void RenderTextCentered(SDL_Renderer* renderer, SDL_Color color, SDL_Rect centerIn, std::string text, std::string font, int size) {
     auto [textW, textH] = GetTextDimensions(renderer, text, font, size);
-    int disX = centerIn.x + (centerIn.w - textW) / 2;
-    int disY = centerIn.y + (centerIn.h - textH) / 2;
-    RenderText(renderer, color, disX, disY, text, font, size);
+    SDL_Rect cRect = CenterRect(centerIn, {0, 0, textW, textH});
+    RenderText(renderer, color, cRect.x, cRect.y, text, font, size);
 }

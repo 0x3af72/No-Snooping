@@ -80,10 +80,12 @@ void TakePicture() {
     UuidCreate(&uuid);
     UuidToStringA(&uuid, (RPC_CSTR*) &fChar);
     file = fChar;
-    file = "Snoopers/" + file + ".mp4";
 
     // Take photo and save in snoopers directory
-    WinTakePicture(file);
+    WinTakePicture("Snoopers/" + file + ".avi");
+
+    // Convert to png
+    system(("ffmpeg -i Snoopers/" + file + ".avi -vf \"select=eq(n\\,0)\" -vframes 1 Snoopers/" + file + ".png").c_str());
 }
 
 int numIter = 0;

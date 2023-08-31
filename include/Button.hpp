@@ -19,20 +19,26 @@ struct SDL_BUTTON {
     int size;
 };
 
-SDL_BUTTON ButtonFromColor(int x, int y, int w, int h, std::function<void()> func, SDL_Color color, SDL_Color tColor, std::string text, std::string font, int size) {
+SDL_BUTTON CreateButtonFromColor(int x, int y, int w, int h, std::function<void()> func, SDL_Color color, SDL_Color tColor, std::string text, std::string font, int size) {
     return {x, y, w, h, func, color, tColor, NULL, false, text, font, size};
 }
 
-SDL_BUTTON ButtonFromTexture(int x, int y, int w, int h, std::function<void()> func, SDL_Renderer* renderer, std::string file) {
-    return {x, y, w, h, func, {0, 0, 0}, {0, 0, 0}, Load_Texture(renderer, file), true};
+SDL_BUTTON CreateButtonFromTexture(int x, int y, int w, int h, std::function<void()> func, SDL_Renderer* renderer, std::string file) {
+    return {x, y, w, h, func, {0, 0, 0}, {0, 0, 0}, LoadTexture(renderer, file), true};
 }
 
-bool UpdateAndRenderButton(SDL_BUTTON& button, SDL_Renderer* renderer, SDL_Rect mRect, bool mouseUp) {
+bool UpdateButton(SDL_BUTTON& button, SDL_Renderer* renderer, SDL_Rect mRect, bool mouseUp) {
 
     // Check if hovers, button clicked
     SDL_Rect bRect = {button.x, button.y, button.w, button.h};
     bool hovers = SDL_HasIntersection(&bRect, &mRect);
     bool clicked = hovers && mouseUp;
+    SDL_Color nColor = button.color;
+    if (hovers) {
+        nColor.r = std::max(0, nColor.r - 20);
+        nColor.g = std::max(0, nColor.g - 20);
+        nColor.b = std::max(0, nColor.b - 20);
+    }
 
     // Display
     float disX = button.x, disY = button.y;
@@ -47,8 +53,10 @@ bool UpdateAndRenderButton(SDL_BUTTON& button, SDL_Renderer* renderer, SDL_Rect 
     if (button.fromTex) {
         SDL_RenderCopy(renderer, button.tex, NULL, &disRect);
     } else {
-        SDL_SetRenderDrawColor(renderer, button.color.r, button.color.g, button.color.b, 255);
+        SDL_SetRenderDrawColor(renderer, nColor.r, nColor.g, nColor.b, nColor.a);
         SDL_RenderFillRect(renderer, &disRect);
+        SDL_SetRenderDrawColor(renderer, button.tColor.r, button.tColor.g, button.tColor.b, nColor.a);
+        SDL_RenderDrawRect(renderer, &disRect);
         RenderTextCentered(renderer, button.tColor, disRect, button.text, button.font, disTextSz);
     }
 

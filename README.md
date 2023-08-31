@@ -4,6 +4,8 @@ Windows program to take pictures of "snoopers" that try to unlock your computer.
 
 Requires a webcam.
 
+Requires FFMPEG.
+
 ## Installation
 
 To begin installation, run Install.exe.
